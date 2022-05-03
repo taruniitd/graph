@@ -1,64 +1,108 @@
 #include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
+
+//Undirected Graph
 class Graph
 {
+    public:
+    Graph(int row, int col);
     int row, col;
-    int adjMatrix[row+1][col+1];
+    //int adjMatrix[][col];
+    int** adjMatrix;
     void createGraphUsingMatrix();
-    void printMatrixGrpah();
+    void printMatrixGraph();
     
     int numVertex;
-    vector<int> adjList[numVertex];
-    void createGraphUsingList();
+    //vector<int> adjList[numVertex];
+    //vector<vector<int>> adjList;
+    vector<int>[] adjList;
+    //vector<vector<int>> *adjList;
+    void addEdge(vector<int> adj[], int origVertex, int termVertex);
+    vector<int>[] createGraphUsingList();
     void printListGraph();
 };
 
+Graph :: Graph(int r, int c)
+{
+    row = r;
+    col = c;
+    numVertex = r;
+    //adjMatrix = new int[row * col];
+    adjMatrix = new int*[row];
+    for(int i = 0; i < row; i++)
+    {
+        adjMatrix[i] = new int[col];
+    }
+    //adjList = new vector<vector<int>> (numVertex, vector<int>(numVertex));
+}
 /* O(2 * num of non-zero elements */
 void Graph::createGraphUsingMatrix()
 {
+    int numEdges;
+    cin >>  numEdges;
+    cout << "numEdges = " << numEdges;
+    while(numEdges > 0)
+    {
     cin >> row >> col;
     adjMatrix[row][col] = 1;
-    adjMatrxi[col][row] = 1;
+    adjMatrix[col][row] = 1;
+    numEdges--; 
+    }        
+    cout << "Matrix created " << endl;
 }
 
-/* O(row * col)
-void Graph :: printMatrixGrpah()
+/* O(row * col) */
+void Graph :: printMatrixGraph()
 {
     for(int r = 0; r < row; r++)
     {
       for(int c = 0; c < col; c++)
       {
-         cout << "edges with vertex : %d" << r << endl;
+         cout << "edges with vertex : " << r << endl;
          if(adjMatrix[r][c])
          {            
-            cout <<  "connected with vertex : %d" << c << endl;
+            cout <<  "connected with vertex : " << c << endl;
          }
       }
     }
 }
 
-void Graph :: addEdge(int origVertex, int termVertex)
+void Graph :: addEdge(vector<int> adj[], int origVertex, int termVertex)
 {
-    adjList[origVertex].push_back(termVertex);
-    adjList[termVertex].push_back(origVertex);
+    cout << "addEdge in" << endl;
+    //adjList[origVertex].push_back(termVertex);
+    //adjList[termVertex].push_back(origVertex);
+    adj[origVertex].push_back(termVertex);
+    adj[termVertex].push_back(origVertex);
+    cout << "addEdge done" <<endl;
 }
 
-void Graph :: createGraphUsingList()
+/* O(2*E) */
+vector<int>[] Graph :: createGraphUsingList()
 {
-    int origVertex, int termVertex;
+    int origVertex, termVertex;
     int numEdges;
-    cin >> numVertex;
+    
     
     if(numVertex < 0)
       cout << "can n't create graph" << endl;
-    cin >> "num of connected edges = " << numEdges;
+    
+    cin >>  numEdges;
+    cout << "num of connected edges = " << numEdges;
+    vector<int> adj[numEdges];
     while(numEdges > 0)
     {
-        cin >> "origVertex = " << origVertex << endl;
-        cin >> "termVertex = " << termVertex << endl;
-        addEdge(origVertex, termVertex);
+        
+        cin >> origVertex; cout << "origVertex = " << origVertex; cout << endl;
+        
+        cin >> termVertex; cout << "termVertex = " << termVertex; cout << endl;
+        addEdge(adj, origVertex, termVertex);
+        numEdges--; 
     }
+    cout << "List created " << endl;
+    return adj;
 }
 
 void Graph :: printListGraph()
@@ -75,9 +119,13 @@ void Graph :: printListGraph()
 
 int main()
 {
-    Graph gph;
+    Graph gph(5,5);
+    cout << "createGraphUsingMatrix :" << endl; 
     gph.createGraphUsingMatrix();
-    gph.createGraphUsingList();
-    gph.printMatrixGrpah();
+    cout << "createGraphUsingList :" << endl;
+    gph.adjList = gph.createGraphUsingList();
+    cout << "printMatrixGraph :" << endl;
+    gph.printMatrixGraph();
+    cout << "printListGraph :" << endl;
     gph.printListGraph();
 }
