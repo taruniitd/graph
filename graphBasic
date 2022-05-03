@@ -1,1 +1,79 @@
 #include <iostream>
+using namespace std;
+
+class Graph
+{
+    int row, col;
+    int adjMatrix[row+1][col+1];
+    void createGraphUsingMatrix();
+    void printMatrixGrpah();
+    
+    int numVertex;
+    vector<int> adjList[numVertex];
+    void createGraphUsingList();
+    void printListGraph();
+};
+
+/* O(2 * num of non-zero elements */
+void Graph::createGraphUsingMatrix()
+{
+    cin >> row >> col;
+    adjMatrix[row][col] = 1;
+    adjMatrxi[col][row] = 1;
+}
+
+/* O(row * col)
+void Graph :: printMatrixGrpah()
+{
+    for(int r = 0; r < row; r++)
+    {
+      for(int c = 0; c < col; c++)
+      {
+         cout << "edges with vertex : %d" << r << endl;
+         if(adjMatrix[r][c])
+         {            
+            cout <<  "connected with vertex : %d" << c << endl;
+         }
+      }
+    }
+}
+
+void Graph :: addEdge(int origVertex, int termVertex)
+{
+    adjList[origVertex].push_back(termVertex);
+    adjList[termVertex].push_back(origVertex);
+}
+
+void Graph :: createGraphUsingList()
+{
+    int origVertex, int termVertex;
+    int numEdges;
+    cin >> numVertex;
+    
+    if(numVertex < 0)
+      cout << "can n't create graph" << endl;
+    cin >> "num of connected edges = " << numEdges;
+    while(numEdges > 0)
+    {
+        cin >> "origVertex = " << origVertex << endl;
+        cin >> "termVertex = " << termVertex << endl;
+        addEdge(origVertex, termVertex);
+    }
+}
+
+void Graph :: printListGraph()
+{
+  for(int vertex = 0; vertex < numVertex; vertex++)
+  {
+    cout << "connected vertex nodes of %d are " << vertex; 
+    for(auto edge : adjList[vertex])
+    {
+      cout << edge << endl;
+    }
+  }
+}
+
+int main()
+{
+    Graph gph;
+    
