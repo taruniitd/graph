@@ -66,9 +66,9 @@ void Graph :: printListGraph()
   for(int vertex = 0; vertex < numVertex; vertex++)
   {
     cout << "connected vertex nodes of %d are " << vertex; 
-    for(auto edge : adjList[vertex])
+    for(auto connVertex : adjList[vertex])
     {
-      cout << edge << endl;
+      cout << connVertex << endl;
     }
   }
 }
@@ -76,4 +76,8 @@ void Graph :: printListGraph()
 int main()
 {
     Graph gph;
-    
+    gph.createGraphUsingMatrix();
+    gph.createGraphUsingList();
+    gph.printMatrixGrpah();
+    gph.printListGraph();
+}
