@@ -1,23 +1,22 @@
 #include <iostream>
 
-void DFS()
+void Graph :: DFSUtil(int curVertex)
 {
-    for(int i = 0; i < numVertex; i++)
-      visited[i] = false;
-    DFSUtil();
-}
-void DFSUtil()
-{
-  visited[i] = true;
-  list<int>::iterator i;
-  for(i-> begin; i -> end; i++)
-  {
-      if(!visited[*i])
-        DFS(*i);
-  }
+    visitedDFS[curVertex] = true;
+    cout << "DFS traversed vertex : " << curVertex << endl;
+    vector<int>::iterator neighbourVertex;
+    for(neighbourVertex = adjList[curVertex].begin(); neighbourVertex != adjList[curVertex].end(); ++neighbourVertex)
+    {
+        if(!visitedDFS[*neighbourVertex])
+            DFSUtil(*neighbourVertex);
+    }
+    
 }
 
-int main()
+void Graph :: DFS(int startVertex)
 {
-  DFS();
+    visitedDFS.resize(numVertex,false);
+    
+    
+    DFSUtil(startVertex);
 }
