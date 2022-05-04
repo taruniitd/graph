@@ -1,0 +1,207 @@
+
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+
+
+//Undirected Graph
+class Graph
+{
+    public:
+    Graph(int row, int col);
+    int row, col;
+    //int adjMatrix[][col];
+    int** adjMatrix;
+    void createGraphUsingMatrix();
+    void printMatrixGraph();
+    
+    int numVertex;
+    //vector<int> adjList[numVertex];
+    vector<vector<int>> adjList;
+    //vector<int>[] adjList;
+    //vector<vector<int>> *adjList;
+    void addEdge(vector<int> &adj, int origVertex, int termVertex);
+    void createGraphUsingList();
+    void printListGraph();
+    
+    vector<bool> visitedDFS;
+    void DFSUtil(int curVertex);
+    void DFS(int startVertex);
+    
+    vector<bool> visitedBFS;
+    void BFSInit();
+    void BFS(int startVertex);
+};
+
+Graph :: Graph(int r, int c)
+{
+    row = r;
+    col = c;
+    numVertex = r;
+    //adjMatrix = new int[row * col];
+    adjMatrix = new int*[row];
+    for(int i = 0; i < row; i++)
+    {
+        adjMatrix[i] = new int[col];
+    }
+    //adjList = new vector<vector<int>> (numVertex, vector<int>(numVertex));
+}
+/* O(2 * num of non-zero elements */
+void Graph::createGraphUsingMatrix()
+{
+    int numEdges, r_in, c_in;
+    cin >>  numEdges;
+    cout << "numEdges = " << numEdges;
+    while(numEdges > 0)
+    {
+    cin >> r_in >> c_in;
+    adjMatrix[r_in][c_in] = 1;
+    adjMatrix[c_in][r_in] = 1;
+    numEdges--; 
+    }        
+    cout << "Matrix created " << endl;
+}
+
+/* O(row * col) */
+void Graph :: printMatrixGraph()
+{
+    for(int r = 0; r < row; r++)
+    {
+        cout << "vertex : " << r << endl;
+      for(int c = 0; c < col; c++)
+      {
+         
+         if(adjMatrix[r][c])
+         {            
+            cout <<  "connected with vertex : " << c << endl;
+         }
+      }
+    }
+}
+
+void Graph :: addEdge(vector<int> &adj, int origVertex, int termVertex)
+{
+    //cout << "addEdge in" << endl;
+    //adjList[origVertex].push_back(termVertex);
+    //adjList[termVertex].push_back(origVertex);
+    //adj[origVertex].push_back(termVertex);
+    //adj[termVertex].push_back(origVertex);
+    adj.push_back(termVertex);
+    //cout << "addEdge done" <<endl;
+}
+
+/* O(2*E) */
+void Graph :: createGraphUsingList()
+{
+    int origVertex, termVertex;
+    int numEdges;
+    
+    
+    if(numVertex < 0)
+      cout << "can n't create graph" << endl;
+    
+    cin >>  numEdges;
+    //cout << "num of connected edges = " << numEdges;
+    
+    numVertex = numEdges;
+    for(int vertex = 0; vertex < numEdges; vertex++)
+    {
+        //cout << "feed numConnections over vertex = " << vertex;
+        int numConnections;
+        cin >> numConnections;
+        //cout << "numConnections = "; cout << numConnections; cout <<endl;
+        vector<int> adj;
+        while(numConnections)
+        {
+            cin >> origVertex; //cout << "origVertex = " << origVertex; cout << endl;
+        
+            cin >> termVertex; //cout << "termVertex = " << termVertex; cout << endl;
+            addEdge(adj, origVertex, termVertex);
+            numConnections--;
+        }
+        //cout << "filled vector size = " << adj.size() << endl;
+        adjList.push_back(adj);
+    }
+    //cout << "List created " << endl;
+    return;
+}
+
+void Graph :: printListGraph()
+{
+  for(int vertex = 0; vertex < numVertex; vertex++)
+  {
+    cout << "connected vertex nodes of  node : " << vertex << "its size =  " << adjList[vertex].size() << endl; 
+    for(auto connVertex : adjList[vertex])
+    {
+        cout << "its connected vertex are :" << connVertex << endl;
+    }
+  }
+}
+
+void Graph :: DFSUtil(int curVertex)
+{
+    visitedDFS[curVertex] = true;
+    cout << "DFS traversed vertex : " << curVertex << endl;
+    vector<int>::iterator neighbourVertex;
+    for(neighbourVertex = adjList[curVertex].begin(); neighbourVertex != adjList[curVertex].end(); ++neighbourVertex)
+    {
+        if(!visitedDFS[*neighbourVertex])
+            DFSUtil(*neighbourVertex);
+    }
+    
+}
+
+void Graph :: DFS(int startVertex)
+{
+    visitedDFS.resize(numVertex,false);
+    
+    
+    DFSUtil(startVertex);
+}
+
+void Graph :: BFSInit()
+{
+    visitedBFS.resize(numVertex,false);
+    
+}
+void Graph :: BFS(int startVertex)
+{
+
+    
+    list<int> queue;
+    visitedBFS[startVertex] = true;
+    queue.push_back(startVertex);
+    
+    while(!queue.empty())
+    {
+      int cur = queue.front();
+      cout << "BFS traversed vertex : " << cur << endl;
+      queue.pop_front();
+      
+      for(auto neighbour : adjList[cur])
+      {
+          if(!visitedBFS[cur])
+          {
+              queue.push_back(neighbour);
+          }
+      }
+      
+    }
+}    
+int main()
+{
+    Graph gph(5,5);
+    cout << "createGraphUsingMatrix :" << endl; 
+    gph.createGraphUsingMatrix();
+    cout << "createGraphUsingList :" << endl;
+    gph.createGraphUsingList();
+    cout << "printMatrixGraph :" << endl;
+    gph.printMatrixGraph();
+    cout << "printListGraph :" << endl;
+    gph.printListGraph();;
+    
+    gph.BFSInit();
+    gph.BFS(0);
+    
+    gph.DFS(0);
+}
