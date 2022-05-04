@@ -1,5 +1,7 @@
 #include <iostream>
 
+//O(V+E)  time complexity
+//O(E)    space complexity
 void Graph :: DFSUtil(int curVertex)
 {
     visitedDFS[curVertex] = true;
