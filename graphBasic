@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <bits/stdc++.h>
 using namespace std;
@@ -16,11 +17,11 @@ class Graph
     
     int numVertex;
     //vector<int> adjList[numVertex];
-    //vector<vector<int>> adjList;
-    vector<int>[] adjList;
+    vector<vector<int>> adjList;
+    //vector<int>[] adjList;
     //vector<vector<int>> *adjList;
-    void addEdge(vector<int> adj[], int origVertex, int termVertex);
-    vector<int>[] createGraphUsingList();
+    void addEdge(vector<int> &adj, int origVertex, int termVertex);
+    void createGraphUsingList();
     void printListGraph();
 };
 
@@ -40,14 +41,14 @@ Graph :: Graph(int r, int c)
 /* O(2 * num of non-zero elements */
 void Graph::createGraphUsingMatrix()
 {
-    int numEdges;
+    int numEdges, r_in, c_in;
     cin >>  numEdges;
     cout << "numEdges = " << numEdges;
     while(numEdges > 0)
     {
-    cin >> row >> col;
-    adjMatrix[row][col] = 1;
-    adjMatrix[col][row] = 1;
+    cin >> r_in >> c_in;
+    adjMatrix[r_in][c_in] = 1;
+    adjMatrix[c_in][r_in] = 1;
     numEdges--; 
     }        
     cout << "Matrix created " << endl;
@@ -58,9 +59,10 @@ void Graph :: printMatrixGraph()
 {
     for(int r = 0; r < row; r++)
     {
+        cout << "vertex : " << r << endl;
       for(int c = 0; c < col; c++)
       {
-         cout << "edges with vertex : " << r << endl;
+         
          if(adjMatrix[r][c])
          {            
             cout <<  "connected with vertex : " << c << endl;
@@ -69,18 +71,19 @@ void Graph :: printMatrixGraph()
     }
 }
 
-void Graph :: addEdge(vector<int> adj[], int origVertex, int termVertex)
+void Graph :: addEdge(vector<int> &adj, int origVertex, int termVertex)
 {
-    cout << "addEdge in" << endl;
+    //cout << "addEdge in" << endl;
     //adjList[origVertex].push_back(termVertex);
     //adjList[termVertex].push_back(origVertex);
-    adj[origVertex].push_back(termVertex);
-    adj[termVertex].push_back(origVertex);
-    cout << "addEdge done" <<endl;
+    //adj[origVertex].push_back(termVertex);
+    //adj[termVertex].push_back(origVertex);
+    adj.push_back(termVertex);
+    //cout << "addEdge done" <<endl;
 }
 
 /* O(2*E) */
-vector<int>[] Graph :: createGraphUsingList()
+void Graph :: createGraphUsingList()
 {
     int origVertex, termVertex;
     int numEdges;
@@ -90,29 +93,39 @@ vector<int>[] Graph :: createGraphUsingList()
       cout << "can n't create graph" << endl;
     
     cin >>  numEdges;
-    cout << "num of connected edges = " << numEdges;
-    vector<int> adj[numEdges];
-    while(numEdges > 0)
+    //cout << "num of connected edges = " << numEdges;
+    
+    numVertex = numEdges;
+    for(int vertex = 0; vertex < numEdges; vertex++)
     {
+        //cout << "feed numConnections over vertex = " << vertex;
+        int numConnections;
+        cin >> numConnections;
+        //cout << "numConnections = "; cout << numConnections; cout <<endl;
+        vector<int> adj;
+        while(numConnections)
+        {
+            cin >> origVertex; //cout << "origVertex = " << origVertex; cout << endl;
         
-        cin >> origVertex; cout << "origVertex = " << origVertex; cout << endl;
-        
-        cin >> termVertex; cout << "termVertex = " << termVertex; cout << endl;
-        addEdge(adj, origVertex, termVertex);
-        numEdges--; 
+            cin >> termVertex; //cout << "termVertex = " << termVertex; cout << endl;
+            addEdge(adj, origVertex, termVertex);
+            numConnections--;
+        }
+        //cout << "filled vector size = " << adj.size() << endl;
+        adjList.push_back(adj);
     }
-    cout << "List created " << endl;
-    return adj;
+    //cout << "List created " << endl;
+    return;
 }
 
 void Graph :: printListGraph()
 {
   for(int vertex = 0; vertex < numVertex; vertex++)
   {
-    cout << "connected vertex nodes of %d are " << vertex; 
+    cout << "connected vertex nodes of  node : " << vertex << "its size =  " << adjList[vertex].size() << endl; 
     for(auto connVertex : adjList[vertex])
     {
-      cout << connVertex << endl;
+        cout << "its connected vertex are :" << connVertex << endl;
     }
   }
 }
@@ -123,7 +136,7 @@ int main()
     cout << "createGraphUsingMatrix :" << endl; 
     gph.createGraphUsingMatrix();
     cout << "createGraphUsingList :" << endl;
-    gph.adjList = gph.createGraphUsingList();
+    gph.createGraphUsingList();
     cout << "printMatrixGraph :" << endl;
     gph.printMatrixGraph();
     cout << "printListGraph :" << endl;
