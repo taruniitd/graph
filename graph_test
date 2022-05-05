@@ -23,11 +23,13 @@ class Graph
     void addEdge(vector<int> &adj, int origVertex, int termVertex);
     void createGraphUsingList();
     void printListGraph();
+    void searchEdgeInVectorGraph(int src, int dest);
     
     set<int, greater<int>> *adjSetList;
     void addEdgeInSet(int src , int dest);
     void createGraphUsingSet();
     void printSetGraph();
+    void searchEdgeInSetGraph(int src, int dest);
     
     vector<bool> visitedDFS;
     void DFSUtil(int curVertex);
@@ -143,6 +145,20 @@ void Graph :: printListGraph()
   }
 }
 
+void Graph :: searchEdgeInVectorGraph(int src, int dest)
+{
+    vector<int>::iterator vecList;
+    vecList = find(adjList[src].begin(), adjList[dest].end(), dest);
+    if(vecList != adjList[dest].end())
+    {
+        cout << "edge with src = " << src << "with dest = " << dest << "found" << endl;
+    }
+    else
+    {
+        cout << "edge with src = " << src << "with dest = " << dest << "not found" << endl;
+    }
+}
+
 void Graph :: addEdgeInSet(int src , int dest)
 {
     adjSetList[src].insert(dest);
@@ -194,6 +210,16 @@ void Graph :: printSetGraph()
         }
         cout << endl;
     }
+}
+
+void Graph :: searchEdgeInSetGraph(int src, int dest)
+{
+    auto setIter = adjSetList[src].find(dest);
+    if(setIter == adjSetList[src].end())
+        cout << "edge with src = " << src << "with dest = " << dest << "not found" << endl;
+    else
+        cout << "edge with dst = " << src << "with dest = " << dest << "found" << endl;
+    
 }
 
 void Graph :: DFSUtil(int curVertex)
@@ -262,6 +288,9 @@ int main()
     gph.printListGraph();
     cout << "printSetGraph :" << endl;
     gph.printSetGraph();
+    
+    gph.searchEdgeInVectorGraph(1,4);
+    gph.searchEdgeInSetGraph(1,4);
     
     gph.BFSInit();
     gph.BFS(0);
