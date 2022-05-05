@@ -24,6 +24,11 @@ class Graph
     void createGraphUsingList();
     void printListGraph();
     
+    set<int, greater<int>> *adjSetList;
+    void addEdgeInSet(int src , int dest);
+    void createGraphUsingSet();
+    void printSetGraph();
+    
     vector<bool> visitedDFS;
     void DFSUtil(int curVertex);
     void DFS(int startVertex);
@@ -138,6 +143,59 @@ void Graph :: printListGraph()
   }
 }
 
+void Graph :: addEdgeInSet(int src , int dest)
+{
+    adjSetList[src].insert(dest);
+    adjSetList[dest].insert(src);
+}
+
+void Graph :: createGraphUsingSet()
+{
+    int origVertex, termVertex;
+    int numEdges;
+    
+    
+    if(numVertex < 0)
+      cout << "can n't create graph" << endl;
+    adjSetList = new set<int, greater<int>>[numVertex];
+    
+    cin >>  numEdges;
+    //cout << "num of connected edges = " << numEdges;
+    
+    numVertex = numEdges;
+    for(int vertex = 0; vertex < numEdges; vertex++)
+    {
+        //cout << "feed numConnections over vertex = " << vertex;
+        int numConnections;
+        cin >> numConnections;
+        //cout << "numConnections = "; cout << numConnections; cout <<endl;
+        while(numConnections)
+        {
+            cin >> origVertex; //cout << "origVertex = " << origVertex; cout << endl;
+        
+            cin >> termVertex; //cout << "termVertex = " << termVertex; cout << endl;
+            addEdgeInSet(origVertex, termVertex);
+        
+            numConnections--;
+        }
+        
+    }
+}
+
+void Graph :: printSetGraph()
+{
+    for(int vertex = 0; vertex < numVertex; vertex++)
+    {
+        set<int, greater<int>> curSet = adjSetList[vertex];
+        cout << "Connected vertex for vertext = " << vertex << endl;
+        for( auto curSetVertex = curSet.begin(); curSetVertex != curSet.end(); curSetVertex++)
+        {
+            cout << *curSetVertex  << "     ";
+        }
+        cout << endl;
+    }
+}
+
 void Graph :: DFSUtil(int curVertex)
 {
     visitedDFS[curVertex] = true;
@@ -196,10 +254,14 @@ int main()
     gph.createGraphUsingMatrix();
     cout << "createGraphUsingList :" << endl;
     gph.createGraphUsingList();
+    cout << "createGraphUsingSet :" << endl;
+    gph.createGraphUsingSet();
     cout << "printMatrixGraph :" << endl;
     gph.printMatrixGraph();
     cout << "printListGraph :" << endl;
-    gph.printListGraph();;
+    gph.printListGraph();
+    cout << "printSetGraph :" << endl;
+    gph.printSetGraph();
     
     gph.BFSInit();
     gph.BFS(0);
