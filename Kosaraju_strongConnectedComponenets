@@ -8,17 +8,19 @@ class DirectedGraph
     
     list<int> *adjList;
     
-    bool *visited;
     
-    stack<int> Stack;
+    
+    //stack<int> Stack;
     
     public: 
+    
+    bool *visited;
     
     DirectedGraph(int numVertex);
     
     void addEdge(int src, int dest);
     
-    void fillOrderInStack(int v);
+    void fillOrderInStack(int v, stack<int> &Stack);
     
     DirectedGraph gphTranspose();
     
@@ -39,7 +41,7 @@ void DirectedGraph :: addEdge(int src, int dest)
     adjList[src].push_back(dest);
 }
 
-void DirectedGraph :: fillOrderInStack(int v)
+void DirectedGraph :: fillOrderInStack(int v, stack<int> &Stack)
 {
     visited[v] = true;
     list<int>::iterator listIter;
@@ -47,14 +49,14 @@ void DirectedGraph :: fillOrderInStack(int v)
     {
         if(!visited[*listIter])
         {
-            cout << "Fill DFS order : " << *listIter << "   ";
-            fillOrderInStack(*listIter);
+            //cout << "Fill DFS order : " << *listIter << "   ";
+            fillOrderInStack(*listIter, Stack);
         }
     }
         
-    Stack.push(*listIter);
-    cout << "Vertex order in stack :" << endl;
-    cout << *listIter;
+    Stack.push(v);
+    //cout << "Vertex order in stack :" << endl;
+    //cout << v;
 }
 
 DirectedGraph DirectedGraph :: gphTranspose()
@@ -64,7 +66,7 @@ DirectedGraph DirectedGraph :: gphTranspose()
     for(int ver = 0; ver < numVertex; ver++)
     {
         list<int>::iterator listIter;
-        for(listIter = adjList[ver].begin(); listIter != adjList[ver].end(); listIter++)
+        for(listIter = adjList[ver].begin(); listIter != adjList[ver].end(); ++listIter)
         {
             gphTr.addEdge(*listIter, ver);
         }
@@ -76,24 +78,29 @@ DirectedGraph DirectedGraph :: gphTranspose()
 void DirectedGraph :: DFSUtil(int curVer)
 {
     visited[curVer] = true;
-    
+    cout << "current strongly conneced Vertex are : " << curVer << "  ";
     list<int>::iterator listIter;
-    for(listIter = adjList[curVer].begin(); listIter != adjList[curVer].end(); listIter++)
+    for(listIter = adjList[curVer].begin(); listIter != adjList[curVer].end(); ++listIter)
     {
         if(!visited[*listIter])
+        {
+            //cout << "cur visited : " << *listIter;
             DFSUtil(*listIter);
+        }
     }
     
-    cout << "current strongly conneced Vertex are : " << *listIter << "  ";
+    
 }
 void DirectedGraph :: printStrgConnComp()
 {
+    stack<int> Stack;
     for(int vis = 0; vis < numVertex; vis++)
         visited[vis] = false;
      
     for(int ver = 0; ver < numVertex; ver++)
     {    
-        fillOrderInStack(ver);
+        if(!visited[ver])
+            fillOrderInStack(ver, Stack);
     }
     
     
@@ -101,15 +108,19 @@ void DirectedGraph :: printStrgConnComp()
     DirectedGraph gphTr = gphTranspose( );
     
     for(int ver = 0; ver < numVertex; ver++)
-        visited[ver] = false;
+        gphTr.visited[ver] = false;
     
     while(Stack.empty() == false)
     {
         int curVer = Stack.top();
         Stack.pop();
         
-        gphTr.DFSUtil(curVer);
-        cout << "next scc group " << endl;
+        //cout << "Stack 's curVer :" << curVer << endl; 
+        if(!gphTr.visited[curVer])
+        {
+            gphTr.DFSUtil(curVer);
+            cout << "next scc group " << endl;
+        }
     }
     
 }
