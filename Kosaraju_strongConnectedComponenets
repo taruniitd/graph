@@ -2,6 +2,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+/* Kosaraju Algorithm runs 1st DFS traversal for filling into Stack */
+/* 2nd iteration for transposing the graph */
+/* 3rd iteration for again DFS traversal over transposed graph based on stack's poped vertex */
 class DirectedGraph
 {
     int numVertex;
