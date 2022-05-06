@@ -10,7 +10,7 @@ class DirectedGraph
         bool *visited;
         DirectedGraph(int V);
         void addEdge(int src, int dest);
-        void DFSUtils();
+        void DFSUtils(int curVer);
         int findMotherVertex();
         
 };
@@ -18,7 +18,7 @@ class DirectedGraph
 DirectedGraph :: DirectedGraph(int V)
 {
     numVertex = V;
-    adj = new list[numVertex];
+    adjList = new list<int>[numVertex];
     visited = new bool[numVertex];
     for(int ver = 0; ver < numVertex; ver++)
     {
@@ -60,19 +60,19 @@ int DirectedGraph :: findMotherVertex()
 
 int main() {
 	DirectedGraph gphD(5);
-	gphD.addEdge(1,0);
-	gphD.addEdge(2,4);
-	gphD.addEdge(3,1);
-	gphD.addEdge(3,2);
-	gphD.addEdge(4,3);
+	gphD.addEdge(0,1);//(1,0);
+	gphD.addEdge(1,2);//(2,4);
+	gphD.addEdge(2,3);//(3,1);
+	gphD.addEdge(3,4);//(3,2);
+	//gphD.addEdge(4,3);
 	
-	lastVertex = gphD.findMotherVertex();
-	for(int ver = 0; ver < numVertex; ver++)
-	    visited[ver] = false;
+	int lastVertex = gphD.findMotherVertex();
+	for(int ver = 0; ver < gphD.numVertex; ver++)
+	    gphD.visited[ver] = false;
 	gphD.DFSUtils(lastVertex);
 	
-	for(int ver = 0; ver < numVertex; ver++)
-	    if(!visited[ver])
+	for(int ver = 0; ver < gphD.numVertex; ver++)
+	    if(!gphD.visited[ver])
 	    {
 	        cout << "No mother vertex found" << endl;
 	        return -1;
