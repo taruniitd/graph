@@ -1,3 +1,82 @@
 #include <iostream>
 #include <bits/stdc++.h>
 using namespace std;
+
+class DirectedGraph
+{
+    public:
+        int numVertex;
+        list<int> *adjList;
+        bool *visited;
+        DirectedGraph(int V);
+        void addEdge(int src, int dest);
+        void DFSUtils();
+        int findMotherVertex();
+        
+};
+
+DirectedGraph :: DirectedGraph(int V)
+{
+    numVertex = V;
+    adj = new list[numVertex];
+    visited = new bool[numVertex];
+    for(int ver = 0; ver < numVertex; ver++)
+    {
+        visited[ver] = false;
+    }
+    
+}
+
+void DirectedGraph :: addEdge(int src, int dest)
+{
+    adjList[src].push_back(dest);
+}
+
+void DirectedGraph :: DFSUtils(int curVer)
+{
+    visited[curVer] = true;
+    
+    list<int>::iterator listIter;
+    for(listIter = adjList[curVer].begin(); listIter != adjList[curVer].end(); ++listIter)
+    {
+        if(!visited[*listIter])
+            DFSUtils(*listIter);
+    }
+}
+
+int DirectedGraph :: findMotherVertex()
+{
+    int lastVertex;
+    for(int ver = 0; ver < numVertex; ver++)
+    {
+        if(!visited[ver])
+        {
+            DFSUtils(ver);
+            lastVertex = ver;
+        }
+    }
+    return lastVertex;
+}
+
+int main() {
+	DirectedGraph gphD(5);
+	gphD.addEdge(1,0);
+	gphD.addEdge(2,4);
+	gphD.addEdge(3,1);
+	gphD.addEdge(3,2);
+	gphD.addEdge(4,3);
+	
+	lastVertex = gphD.findMotherVertex();
+	for(int ver = 0; ver < numVertex; ver++)
+	    visited[ver] = false;
+	gphD.DFSUtils(lastVertex);
+	
+	for(int ver = 0; ver < numVertex; ver++)
+	    if(!visited[ver])
+	    {
+	        cout << "No mother vertex found" << endl;
+	        return -1;
+	    }
+	cout << "mother vertex found : " << lastVertex << endl;
+	return 0;
+}
