@@ -1,0 +1,52 @@
+/*Given a boolean 2D array of n x m dimensions where each row is sorted. Find the 0-based index of the first row that has the maximum number of 1's.*/
+#include<iostream>
+#include<bits/stdc++.h>
+using namespace std;
+
+#define R 4
+#define C 4
+
+int checkFirstOne(bool arr[], int low, int high)
+{
+    if(high >= low)
+    {
+        int mid = low + (high - low) / 2;
+        
+        if( (mid == 0 || arr[mid - 1] == 0) && arr[mid] == 1)
+            return mid;
+        else if(arr[mid] == 0)
+            return checkFirstOne(arr, mid + 1, high);
+        else
+            return checkFirstOne(arr, low, mid -1);
+    }
+    return -1;
+}
+
+int findMaxRowWithOnes(bool mat[R][C], int row, int col)
+{
+    int maxRowIndex = 0, prevMaxCount = 0, rowRes = 0;
+    for(int r = 0; r < row; r++)
+    {
+        int firstColIndex = checkFirstOne(mat[r], 0, col);    
+        maxRowIndex = col - firstColIndex;
+        if( maxRowIndex > prevMaxCount )
+        {
+            prevMaxCount = maxRowIndex;
+            rowRes = r;
+        }
+    }   
+    return rowRes;
+    
+}
+
+int main()
+{
+    bool mat[R][C] = {  { 0, 0, 0, 1},
+                        { 0, 0, 1, 1},
+                        { 0, 1, 1, 1},
+                        { 1, 1, 1, 1} };
+    
+    int rowIndex = findMaxRowWithOnes(mat, R, C);
+    cout << "row with max 1's = " << rowIndex << endl;
+    return 0;
+}
