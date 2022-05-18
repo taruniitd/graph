@@ -1,0 +1,52 @@
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+
+bool isSafe(int mat[][C], int curRow, int curCol, bool visited[][C])
+{
+    if(mat[curRow][curCol] && curRow >= 0 && curRow < R && curCol >= 0 && curCol < C && !visited[curRow][curCol])
+        return true;
+}
+void DFS(int mat[][C], int row, int col, bool visited[][C])
+{
+    int allowRowNbr[] = { -1, -1, -1, 0, 1, 1,  1, 0};
+    
+    int allowColNbr[] = { -1,  0,  1, 1, 1, 0, -1, -1;
+
+    for(int dir = 0; dir < 8; dir++)
+    {
+        if(isSafe(mat, row + allowRowNbr[dir], col + allowColNbr[dir]))
+        {
+            visited[row + allowRowNbr[dir]][col + allowColNbr[dir]] = true;
+            DFS(mat, row + allowRowNbr, col + allowColNbr, visited);
+        }
+    }
+}
+
+int countIsland(int mat[][C], int row, int col, bool visited[][C])
+{
+    
+    for(int r = 0; r < row; r++)
+    {
+        for(int c = 0; c < col; c++)
+        {
+            if(mat[r][c] && !visited[r][c])
+                DFS(mat, r, c, visited);
+            
+        }
+    }
+}
+
+int main()
+{
+    int mat[R][C] = {   { 1, 0, 1, 1, 1},
+                        { 0, 1, 1, 0, 0},
+                        { 0, 0, 0, 0, 0},
+                        { 1, 0, 0, 0, 1},
+                        { 0, 1, 0, 1, 0} };
+    }
+    bool visited[R][C] = { 0 };
+    int numIsland = countIsland(mat, R, C, visited);
+    cout << "number of island = " << numIsland;
+    return 0;
+}
