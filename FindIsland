@@ -2,39 +2,49 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+#define R 5
+#define C 5
+int allowRowNbr[] = { -1, -1, -1, 0, 1, 1,  1, 0};
+    
+int allowColNbr[] = { -1,  0,  1, 1, 1, 0, -1, -1};
+
 bool isSafe(int mat[][C], int curRow, int curCol, bool visited[][C])
 {
-    if(mat[curRow][curCol] && curRow >= 0 && curRow < R && curCol >= 0 && curCol < C && !visited[curRow][curCol])
+    if((curRow >= 0) && (curRow < R) && (curCol >= 0) && (curCol < C) && mat[curRow][curCol] && !visited[curRow][curCol])
         return true;
+    return false;
 }
 void DFS(int mat[][C], int row, int col, bool visited[][C])
 {
-    int allowRowNbr[] = { -1, -1, -1, 0, 1, 1,  1, 0};
-    
-    int allowColNbr[] = { -1,  0,  1, 1, 1, 0, -1, -1;
+    visited[row][col] = true;
 
     for(int dir = 0; dir < 8; dir++)
     {
-        if(isSafe(mat, row + allowRowNbr[dir], col + allowColNbr[dir]))
+        if(isSafe(mat, row + allowRowNbr[dir], col + allowColNbr[dir], visited))
         {
-            visited[row + allowRowNbr[dir]][col + allowColNbr[dir]] = true;
-            DFS(mat, row + allowRowNbr, col + allowColNbr, visited);
+            cout << "safe passed for : " << "r = " << row + allowRowNbr[dir] << "c = " << col + allowColNbr[dir] << endl;
+            DFS(mat, row + allowRowNbr[dir], col + allowColNbr[dir], visited);
         }
     }
 }
 
 int countIsland(int mat[][C], int row, int col, bool visited[][C])
 {
-    
+    int count = 0;
     for(int r = 0; r < row; r++)
     {
         for(int c = 0; c < col; c++)
         {
             if(mat[r][c] && !visited[r][c])
+            {
+                cout << "starting vertex :" << r << "  "  << c << endl;
                 DFS(mat, r, c, visited);
+                count++;
+            }
             
         }
     }
+    return count;
 }
 
 int main()
@@ -44,8 +54,8 @@ int main()
                         { 0, 0, 0, 0, 0},
                         { 1, 0, 0, 0, 1},
                         { 0, 1, 0, 1, 0} };
-    }
-    bool visited[R][C] = { 0 };
+    bool visited[R][C];
+    memset(visited, 0, sizeof(visited)); //{ 0 };
     int numIsland = countIsland(mat, R, C, visited);
     cout << "number of island = " << numIsland;
     return 0;
