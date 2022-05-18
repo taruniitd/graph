@@ -39,6 +39,25 @@ int findMaxRowWithOnes(bool mat[R][C], int row, int col)
     
 }
 
+int findMaxRowWithOnesWithBrute(bool mat [R][C],int row, int col)
+{
+    int count = 0, prevMaxCount = 0, rowIndexBrute = 0;
+    for(int r = 0; r < row; r++)
+    {
+        count = 0;
+        for( int c = 0; c < col; c++)
+        {
+            if(mat[r][c] == 1)
+                count++;
+        }
+        if(count > prevMaxCount)
+        {
+            prevMaxCount = count;
+            rowIndexBrute = r;
+        }
+    }
+    return rowIndexBrute;
+}
 int main()
 {
     bool mat[R][C] = {  { 0, 0, 0, 1},
@@ -48,5 +67,9 @@ int main()
     
     int rowIndex = findMaxRowWithOnes(mat, R, C);
     cout << "row with max 1's = " << rowIndex << endl;
+    int rowIndexBrute = findMaxRowWithOnesWithBrute(mat, R, C); 
+    cout << "row with max 1's = " << rowIndexBrute << endl;
     return 0;
 }
+
+
