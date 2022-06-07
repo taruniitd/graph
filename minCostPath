@@ -1,11 +1,13 @@
 #include <iostream>
+#include <algorithm>
+#include <limits>
 #include <bits/stdc++.h>
 using namespace std;
 
 #define R 3 
 #define C 3
 
-int min(int x, int y, int z) 
+int minVal(int x, int y, int z) 
 {
     if(x < y)
         return x < z ? x : z;
@@ -18,7 +20,7 @@ int minCost(int costMat[][C], int rowDest, int colDest)
         return 0;
     if(rowDest == 0 && colDest == 0)
         return costMat[rowDest][colDest]; 
-    int Cost = costMat[rowDest][colDest] + min(  minCost(costMat, rowDest - 1, colDest),
+    int Cost = costMat[rowDest][colDest] + minVal(  minCost(costMat, rowDest - 1, colDest),
                                                 minCost(costMat, rowDest, colDest - 1),
                                                 minCost(costMat, rowDest - 1, colDest - 1 ) 
                                             );
@@ -39,7 +41,7 @@ int minCostUsingDP(int costMat[][C], int rowDest, int colDest)
     {
         for(int col = 1; col <= colDest; col++)
         {
-            tempCostMat[row][col] = costMat[row][col] + min(tempCostMat[row - 1][col],
+            tempCostMat[row][col] = costMat[row][col] + minVal(tempCostMat[row - 1][col],
                                                             tempCostMat[row][col - 1],
                                                             tempCostMat[row - 1][col - 1]); 
         }
@@ -58,12 +60,86 @@ int minCostUsingDPNoExtraSpace(int costMat[][C], int rowDest, int colDest)
     {
         for(int col = 1; col <= colDest; col++)
         {
-            costMat[row][col] = costMat[row][col] + min(costMat[row - 1][col],
+            costMat[row][col] = costMat[row][col] + minVal(costMat[row - 1][col],
                                                             costMat[row][col - 1],
                                                             costMat[row - 1][col - 1]); 
         }
     }
     return costMat[rowDest][colDest];   
+}
+
+struct cell
+{
+    int x;
+    int y;
+    int cost;
+};
+
+int row_vec[] = { -1, -1, -1, 0, 1, 1,  1 };
+int col_vec[] = { -1,  0,  1, 1, 1, 0, -1 };
+
+class mycomparision
+{
+    public:
+        bool operator() (const cell &lhs, const cell &rhs) const
+        {
+            return (lhs.cost > rhs.cost);
+        }
+};
+
+bool isSafe(int new_row, int new_col)
+{
+    if(new_row < 0 || new_row > R || new_col < 0 || new_col > C)
+        return false;
+}
+
+int minCostUsingDP_PriorityQ(int costMat[][C], int rowDest, int colDest)
+{
+    bool visited[R][C];
+    
+    priority_queue<cell, vector<cell>, mycomparision> pq;
+    
+    int tempCostMat[R][C];
+    
+    for(int row = 0; row < R; row++)
+    {
+        for(int col = 0; col < C; col++)
+        {
+            visited[row][col] = false;
+            tempCostMat[row][col] = INT_MAX;
+        }
+    }
+    
+    tempCostMat[0][0] = costMat[0][0];
+    pq.push({0, 0, costMat[0][0]});    
+    
+    while(!pq.empty())
+    {
+        cell cur_cell = pq.top();
+        pq.pop();
+        
+        int x = cur_cell.x;
+        int y = cur_cell.y;
+        
+        if(visited[x][y] == true)
+            continue;
+        
+        visited[x][y] = true;
+        
+        for(int i = 0; i < 8; i++)
+        {
+            int next_x = x + i;
+            int next_y = y + i;
+            if(isSafe(next_x, next_y) && !visited[next_x][next_y])
+            {
+                tempCostMat[next_x, next_y] = 
+                std::min(tempCostMat[next_x, next_y], tempCostMat[x,y] + costMat[next_x][next_y]);
+                pq.push({ next_x, next_y, tempCostMat[next_x][next_y] });                                                    
+            }
+        }
+        
+    }
+    return tempCostMat[rowDest][colDest];
 }
 
 int main()
