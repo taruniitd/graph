@@ -133,7 +133,7 @@ int minCostUsingDP_PriorityQ(int costMat[][C], int rowDest, int colDest)
             if(isSafe(next_x, next_y) && !visited[next_x][next_y])
             {
                 tempCostMat[next_x, next_y] = 
-                std::min(tempCostMat[next_x, next_y], tempCostMat[x,y] + costMat[next_x][next_y]);
+                std::min(tempCostMat[next_x][next_y], (tempCostMat[x][y] + costMat[next_x][next_y]));
                 pq.push({ next_x, next_y, tempCostMat[next_x][next_y] });                                                    
             }
         }
@@ -150,4 +150,5 @@ int main()
     cout << " MinCost = " << minCost(COST, 2, 2) << endl;
     cout << "minCostUsingDP = " << minCostUsingDP(COST, 2, 2) << endl;
     cout << "minCostUsingDPNoExtraSpace = " << minCostUsingDPNoExtraSpace(COST, 2, 2) << endl;
+    cout << "minCostUsingDP_PriorityQ = " << minCostUsingDP_PriorityQ(COST, 2, 2) << endl;
 }
