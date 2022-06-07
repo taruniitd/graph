@@ -1,0 +1,77 @@
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+
+#define R 3 
+#define C 3
+
+int min(int x, int y, int z) 
+{
+    if(x < y)
+        return x < z ? x : z;
+    else
+        return y < z ? y : z;
+}
+int minCost(int costMat[][C], int rowDest, int colDest)
+{
+    if(rowDest < 0 || rowDest > R || colDest < 0 || colDest > C)
+        return 0;
+    if(rowDest == 0 && colDest == 0)
+        return costMat[rowDest][colDest]; 
+    int Cost = costMat[rowDest][colDest] + min(  minCost(costMat, rowDest - 1, colDest),
+                                                minCost(costMat, rowDest, colDest - 1),
+                                                minCost(costMat, rowDest - 1, colDest - 1 ) 
+                                            );
+
+    return Cost;                                    
+}
+
+int minCostUsingDP(int costMat[][C], int rowDest, int colDest)
+{
+    int tempCostMat[R][C];
+    
+    for(int row = 0; row < R; row++)
+        tempCostMat[row][0] = costMat[row][0];
+    for(int col = 0; col < C; col++)
+        tempCostMat[0][col] = costMat[0][col];
+    
+    for(int row = 1; row <= rowDest; row++)
+    {
+        for(int col = 1; col <= colDest; col++)
+        {
+            tempCostMat[row][col] = costMat[row][col] + min(tempCostMat[row - 1][col],
+                                                            tempCostMat[row][col - 1],
+                                                            tempCostMat[row - 1][col - 1]); 
+        }
+    }
+    return tempCostMat[rowDest][colDest];   
+}
+
+int minCostUsingDPNoExtraSpace(int costMat[][C], int rowDest, int colDest)
+{
+    for(int row = 1; row < R; row++)
+        costMat[row][0] += costMat[row - 1][0];
+    for(int col = 1; col < C; col++)
+        costMat[0][col] += costMat[0][col - 1];
+    
+    for(int row = 1; row <= rowDest; row++)
+    {
+        for(int col = 1; col <= colDest; col++)
+        {
+            costMat[row][col] = costMat[row][col] + min(costMat[row - 1][col],
+                                                            costMat[row][col - 1],
+                                                            costMat[row - 1][col - 1]); 
+        }
+    }
+    return costMat[rowDest][colDest];   
+}
+
+int main()
+{
+    int COST[R][C] = {  { 1, 2, 3 },
+                        { 4, 1, 2 },
+                        { 1, 2, 3 } };
+    cout << " MinCost = " << minCost(COST, 2, 2) << endl;
+    cout << "minCostUsingDP = " << minCostUsingDP(COST, 2, 2) << endl;
+    cout << "minCostUsingDPNoExtraSpace = " << minCostUsingDPNoExtraSpace(COST, 2, 2) << endl;
+}
