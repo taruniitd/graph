@@ -1,3 +1,4 @@
+//https://www.geeksforgeeks.org/min-cost-path-dp-6/
 #include <iostream>
 #include <algorithm>
 #include <limits>
@@ -75,9 +76,10 @@ struct cell
     int cost;
 };
 
-int row_vec[] = { -1, -1, -1, 0, 1, 1,  1 };
-int col_vec[] = { -1,  0,  1, 1, 1, 0, -1 };
-
+int row_vec[] = { -1, -1, -1, 0, 1, 1,  1,  0 };
+int col_vec[] = { -1,  0,  1, 1, 1, 0, -1, -1 };
+//int row_vec[] = { 0, 1, 1};
+//int col_vec[] = { 1, 1, 0};
 class mycomparision
 {
     public:
@@ -89,8 +91,10 @@ class mycomparision
 
 bool isSafe(int new_row, int new_col)
 {
-    if(new_row < 0 || new_row > R || new_col < 0 || new_col > C)
+    if(new_row < 0 || new_row >= R || new_col < 0 || new_col >= C)
         return false;
+
+    return true;
 }
 
 int minCostUsingDP_PriorityQ(int costMat[][C], int rowDest, int colDest)
@@ -121,24 +125,27 @@ int minCostUsingDP_PriorityQ(int costMat[][C], int rowDest, int colDest)
         int x = cur_cell.x;
         int y = cur_cell.y;
         
+        
         if(visited[x][y] == true)
             continue;
         
         visited[x][y] = true;
-        
+        //cout << "x = " << x << "y = " << y << "    ";
         for(int i = 0; i < 8; i++)
         {
-            int next_x = x + i;
-            int next_y = y + i;
+            int next_x = x + row_vec[i];
+            int next_y = y + col_vec[i];
             if(isSafe(next_x, next_y) && !visited[next_x][next_y])
             {
-                tempCostMat[next_x, next_y] = 
-                std::min(tempCostMat[next_x][next_y], (tempCostMat[x][y] + costMat[next_x][next_y]));
+                tempCostMat[next_x][next_y] = std::min(tempCostMat[next_x][next_y], tempCostMat[x][y] + costMat[next_x][next_y]);
+                //cout << "next_x = " << next_x << "next_y = " << next_y << endl;
+                //cout << "costMat[next_x][next_y] = " << costMat[next_x][next_y] << "  tempCostMat[next_x][next_y]" << tempCostMat[next_x][next_y] <<endl;
                 pq.push({ next_x, next_y, tempCostMat[next_x][next_y] });                                                    
             }
         }
         
     }
+    //cout << "tempCostMat[rowDest][colDest] = " << tempCostMat[rowDest][colDest] <<endl;
     return tempCostMat[rowDest][colDest];
 }
 
@@ -150,5 +157,10 @@ int main()
     cout << " MinCost = " << minCost(COST, 2, 2) << endl;
     cout << "minCostUsingDP = " << minCostUsingDP(COST, 2, 2) << endl;
     cout << "minCostUsingDPNoExtraSpace = " << minCostUsingDPNoExtraSpace(COST, 2, 2) << endl;
-    cout << "minCostUsingDP_PriorityQ = " << minCostUsingDP_PriorityQ(COST, 2, 2) << endl;
+    
+    int COST_1[R][C] = {  { 1, 2, 3 },
+                        { 4, 1, 2 },
+                        { 1, 2, 3 } };
+    cout << "minCostUsingDP_PriorityQ = " << minCostUsingDP_PriorityQ(COST_1, 2, 2) << endl;
+    return 0;
 }
