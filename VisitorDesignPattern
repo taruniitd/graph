@@ -1,0 +1,129 @@
+//https://www.geeksforgeeks.org/visitor-design-pattern/
+//https://refactoring.guru/design-patterns/visitor
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+
+class Apple;
+class Google;
+class Visitor
+{
+    public:
+        virtual void visit(Apple* ) = 0;
+        virtual void visit(Google* ) = 0;
+        
+        static int m_num_apples, m_num_googles;
+        void total_stocks()
+        {
+            cout << " m_num_apples = " << m_num_apples << " m_num_googles = " << m_num_googles << endl;
+        }
+};
+
+int Visitor::m_num_apples = 0;
+int Visitor::m_num_googles = 0;
+
+class Stock
+{
+    public :
+        virtual void accept(Visitor* ) = 0;
+};
+
+class Apple : public Stock
+{
+    public :
+        void accept(Visitor* v)
+        {
+            v->visit(this);
+        }
+        void buy()
+        {
+            cout << " buy Apple stock " << endl;
+        }
+        void sell()
+        {
+            cout << " sell Apple Stock " << endl;
+        }
+};
+
+class Google : public Stock
+{
+    public :
+        void accept(Visitor* v)
+        {
+            v->visit(this);
+        }
+        void buy()
+        {
+            cout << " buy Google Stock " << endl;
+        }
+        void sell()
+        {
+            cout << " sell Google Stock " << endl;
+        }
+};
+
+class BuyVisitor : public Visitor
+{
+    public :
+        BuyVisitor()
+        {
+            m_num_googles = m_num_apples = 0;
+        }
+        void visit(Apple* apple)
+        {
+            m_num_apples++;
+            apple->buy();
+            cout << " m_num_apples = " << m_num_apples <<endl;
+        }
+        
+        void visit(Google* google)
+        {
+            m_num_googles++;
+            google->buy();
+            cout << "m_num_googles = " << m_num_googles << endl;
+        }
+};
+
+class SellVisitor : public Visitor
+{
+    public :
+        SellVisitor()
+        {
+            
+        }
+        void visit(Apple* apple)
+        {
+            m_num_apples--;
+            apple->sell();
+            cout << "m_num_apples = " << m_num_apples << endl;
+        }
+        void visit(Google* google)
+        {
+            m_num_googles--;
+            google->sell();
+            std::cout << "m_num_googles = " << m_num_googles << std::endl;
+        }
+};
+
+int main() {
+	Stock* set[] = { new Apple, new Google, new Google, new Apple, new Apple, 0 } ;
+	
+	BuyVisitor* buyOperation = new BuyVisitor();
+	
+	SellVisitor* sellOperation = new SellVisitor();
+	
+	for(int i = 0; set[i]; i++)
+	{
+	    set[i]->accept(buyOperation);
+	}
+	
+	buyOperation->total_stocks();
+	
+	for(int i = 0; set[i]; i++)
+	{
+	    set[i]->accept(sellOperation);
+	}
+	
+	sellOperation->total_stocks();
+	return 0;
+}
