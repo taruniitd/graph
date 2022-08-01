@@ -1,0 +1,142 @@
+//https://www.geeksforgeeks.org/clone-an-undirected-graph/
+#include <iostream>
+#include <map>
+#include <vector>
+#include <queue>
+using namespace std;
+
+typedef struct graphNode
+{
+    int data;
+    vector<graphNode*> neighbours;
+} graphNode;
+
+graphNode* cloneGraph(graphNode* src)
+{
+    map<graphNode*, graphNode*> map_node;
+    
+    queue<graphNode*> queue_node;
+    
+    queue_node.push(src);
+    
+    graphNode* new_node;
+    
+    new_node = new graphNode();
+    new_node->data = src->data;
+    
+    map_node[src] = new_node;
+    
+    while(!queue_node.empty())
+    {
+        graphNode* old_node = queue_node.front();
+        queue_node.pop();
+        
+        vector<graphNode*> vec = old_node->neighbours;
+        int n = vec.size();
+        
+        for(int i = 0; i < n; i++)
+        {
+            if(map_node[vec[i]] == nullptr)
+            {
+                new_node = new graphNode();
+                new_node->data = vec[i]->data;
+                map_node[vec[i]] = new_node;
+                queue_node.push(vec[i]);
+            }
+            map_node[old_node]->neighbours.push_back(map_node[vec[i]]);
+        }
+    }
+    return map_node[src];
+}
+
+graphNode* buildGraph()
+{
+    graphNode* node1 = new graphNode();
+    node1->data = 1;
+    
+    graphNode* node2 = new graphNode();
+    node2->data = 2;
+    
+    graphNode* node3 = new graphNode();
+    node3->data = 3;
+    
+    graphNode* node4 = new graphNode();
+    node4->data = 4;
+    
+    graphNode* node5 = new graphNode();
+    node5->data = 5;
+    
+    vector<graphNode*> vec;
+    vec.push_back(node2);
+    vec.push_back(node5);
+    node1->neighbours = vec;
+    vec.clear();
+    
+    vec.push_back(node1);
+    vec.push_back(node3);
+    vec.push_back(node5);
+    node2->neighbours = vec;
+    vec.clear();
+    
+    vec.push_back(node2);
+    vec.push_back(node4);
+    node3->neighbours = vec;
+    vec.clear();
+    
+    vec.push_back(node3);
+    vec.push_back(node5);
+    node4->neighbours = vec;
+    vec.clear();
+    
+    vec.push_back(node1);
+    vec.push_back(node2);
+    vec.push_back(node4);
+    node5->neighbours = vec;
+    //vec.clear();
+    
+    return node1;
+}
+
+void bfs(graphNode* src)
+{
+    map<graphNode*, bool> visitedMap;
+    
+    queue<graphNode*> queue_node;
+    
+    queue_node.push(src);
+    visitedMap[src] = true;
+    
+    while(!queue_node.empty())
+    {
+        graphNode* old_node = queue_node.front();
+        cout << "Value of current visited node = " << old_node->data << endl;
+        cout << " Address pf current visited node = " << old_node << endl;
+        queue_node.pop();
+        
+        vector<graphNode*> vec = old_node->neighbours;
+        int n = vec.size();
+        
+        for(int i = 0; i < n; i++)
+        {
+            if(!visitedMap[vec[i]])
+            {
+                visitedMap[vec[i]] = true;
+                queue_node.push(vec[i]);
+            }
+        }
+    }
+    cout << endl;
+}
+
+int main() {
+	
+	graphNode* src = buildGraph();
+	cout << " graph traversal before cloning : " << endl;
+	bfs(src);
+	cout << " graph traversal after cloning : " << endl;
+	graphNode* newSrc = cloneGraph(src);
+	bfs(newSrc);
+	
+	
+	return 0;
+}
