@@ -1,3 +1,4 @@
+//https://www.geeksforgeeks.org/find-number-of-islands/
 #include <iostream>
 #include <bits/stdc++.h>
 using namespace std;
@@ -47,6 +48,52 @@ int countIsland(int mat[][C], int row, int col, bool visited[][C])
     return count;
 }
 
+void DFS(vector<vector<int>> &Mat, int i, int j, int row, int col)
+{
+    if( i < 0 || j < 0 || i > (row - 1) || j > (col - 1) || Mat[i][j] != 1)
+        return;
+    if(Mat[i][j] == 1)
+    {
+        Mat[i][j] = 0;
+        DFS(Mat, i + 1, j, row, col);
+        DFS(Mat, i - 1, j, row, col);
+        DFS(Mat, i, j + 1, row, col);
+        DFS(Mat, i, j - 1, row, col);
+        DFS(Mat, i + 1, j + 1, row, col);
+        DFS(Mat, i - 1, j - 1, row, col);
+        DFS(Mat, i + 1, j - 1, row, col);
+        DFS(Mat, i - 1, j + 1, row, col);
+    }
+}
+
+int countIslands_1(vector<vector<int>> &Mat)
+{
+    int row = Mat.size();
+    int col = Mat[0].size();
+    
+    int count = 0;
+    
+    for(int i = 0; i < row; i++)
+    {
+        for(int j = 0; j < col; j++)
+        {
+            if(Mat[i][j] == 1)
+            {
+                Mat[i][j] = 0;
+                count++;
+                DFS(Mat, i + 1, j, row, col);
+                DFS(Mat, i - 1, j, row, col);
+                DFS(Mat, i, j + 1, row, col);
+                DFS(Mat, i, j - 1, row, col);
+                DFS(Mat, i + 1, j + 1, row, col);
+                DFS(Mat, i - 1, j - 1, row, col);
+                DFS(Mat, i + 1, j - 1, row, col);
+                DFS(Mat, i - 1, j + 1, row, col);
+            }
+        }
+    }
+    return count;
+}
 int main()
 {
     int mat[R][C] = {   { 1, 0, 1, 1, 1},
@@ -57,6 +104,13 @@ int main()
     bool visited[R][C];
     memset(visited, 0, sizeof(visited)); //{ 0 };
     int numIsland = countIsland(mat, R, C, visited);
-    cout << "number of island = " << numIsland;
+    cout << "number of island = " << numIsland << endl;
+    vector<vector<int>> M = {{1, 1, 0, 0, 0},
+                             {0, 1, 0, 0, 1},
+                             {1, 0, 0, 1, 1},
+                             {0, 0, 0, 0, 0},
+                             {1, 0, 1, 0, 1}};
+    int numIsland1 = countIslands_1(M);
+    cout << "number of island using new func = " << numIsland1 << endl;
     return 0;
 }
