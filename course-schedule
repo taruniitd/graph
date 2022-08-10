@@ -27,28 +27,68 @@ bool dfs_cycle(vector<unordered_set<int>> &graph, int node,
     
     return onpath[node] = false;
 }
-bool canFinish(int numTasks, vector<pair<int,int>> &course_path)
+bool canFinish(int numCourses, vector<pair<int,int>> &course_path)
 {
-    vector<unordered_set<int>> graph = make_graph(numTasks, course_path);
-    vector<bool> onpath(numTasks, false), visited(numTasks, false);
+    vector<unordered_set<int>> graph = make_graph(numCourses, course_path);
+    vector<bool> onpath(numCourses, false), visited(numCourses, false);
     
-    for(int i = 0; i < numTasks; i++)
+    for(int i = 0; i < numCourses; i++)
     {
         if(!visited[i] && dfs_cycle(graph, i , onpath, visited))
             return false;
     }
     return true;
 }
+
+vector<int> compute_indegree(vector<unordered_set<int>> &graph)
+{
+    vector<int> degrees(graph.size(), 0);
+    
+    for(auto neighbors : graph)
+        for(int neigh : neighbors)
+            degrees[neigh]++;
+    return degrees;
+}
+
+bool canFinishUsingBFS(int numCourses, vector<pair<int,int>> &course_path)
+{
+    vector<unordered_set<int>> graph = make_graph(numCourses, course_path);
+    vector<int> degrees = compute_indegree(graph);
+    
+    for(int i = 0; i < numCourses; i++)
+    {
+        int j = 0;
+        for(; j < numCourses; j++)
+            if(!degrees[j])
+                break;
+        if(j == numCourses)
+            return false;
+            
+        degrees[j] = -1;
+        for(int neigh : graph[j])   
+            degrees[neigh]--;
+    }
+    return true;
+}
 int main()
 {
-    int numTasks = 4;
+    int numCourses = 4;
     vector<pair<int,int>> course_path;
     
     course_path.push_back(make_pair(0,1));
     course_path.push_back(make_pair(1,0));
     course_path.push_back(make_pair(3,2));
     
-    if(canFinish(numTasks, course_path))
+    if(canFinish(numCourses, course_path))
+    {
+        cout << "possible to finish all courses " << endl;
+    }
+    else
+    {
+        cout << "Impossible to finish all courses " << endl;
+    }
+    
+    if(canFinishUsingBFS(numCourses, course_path))
     {
         cout << "possible to finish all courses " << endl;
     }
